@@ -1,18 +1,31 @@
 package alteirac.srmanager.Model;
 
+import java.util.Date;
+
 /**
- * Created by Guillaume on 05/05/2017.
+ * Created by Jean on 05/05/2017.
  */
 
 public class News {
 
-    private String title;
-    private String desc;
     private int id;
+    private String title;
+    private Date date;
+    private String shortDescription;
+    private String longDescription;
+    private byte[] byteImage;
 
-    public News(String title, String desc) {
+    public News (String title, String longDescription) {
         this.title = title;
-        this.desc = desc;
+        this.longDescription = longDescription;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -23,19 +36,35 @@ public class News {
         this.title = title;
     }
 
-    public String getDesc() {
-        return desc;
+    public Date getDate() {
+        return date;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public int getId() {
-        return id;
+    public String getShortDescription() {
+        return shortDescription;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public String getLongDescription() {
+        return longDescription;
+    }
+
+    public void setLongDescription(String longDescription) {
+        this.longDescription = longDescription;
+    }
+
+    public byte[] getByteImage() {
+        return byteImage;
+    }
+
+    public void setByteImage(byte[] byteImage) {
+        this.byteImage = byteImage;
     }
 }

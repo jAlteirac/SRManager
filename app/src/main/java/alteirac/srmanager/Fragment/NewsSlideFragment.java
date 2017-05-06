@@ -58,7 +58,7 @@ public class NewsSlideFragment extends Fragment {
         TextView textDesc = (TextView) v.findViewById(R.id.NewsDesc);
 
         textTitle.setText(news.get(news_id).getTitle());
-        textDesc.setText(news.get(news_id).getDesc());
+        textDesc.setText(news.get(news_id).getLongDescription());
 
         return v;
     }
