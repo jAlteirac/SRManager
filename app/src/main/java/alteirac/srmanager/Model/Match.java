@@ -7,9 +7,8 @@ import java.util.List;
  * Created by Jean on 06/05/2017.
  */
 
-public class Match {
+public class Match extends Entity {
 
-    private int id;
     private Date date;
     private String location;
     private String referee;

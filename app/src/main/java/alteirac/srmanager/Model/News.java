@@ -6,9 +6,8 @@ import java.util.Date;
  * Created by Jean on 05/05/2017.
  */
 
-public class News {
+public class News extends Entity {
 
-    private int id;
     private String title;
     private Date date;
     private String description;

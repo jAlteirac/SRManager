@@ -6,9 +6,8 @@ import java.util.List;
  * Created by Jean on 06/05/2017.
  */
 
-public class Team {
+public class Team extends Entity {
 
-    private int id;
     private String name;
     private List<String> players;
     private byte[] byteImage;

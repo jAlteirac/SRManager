@@ -1,4 +1,4 @@
-package alteirac.srmanager.DatabaseManager;
+package alteirac.srmanager.DatabaseManager.DAO;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -11,22 +11,24 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import alteirac.srmanager.DatabaseManager.DatabaseConstants;
+import alteirac.srmanager.Model.Entity;
 import alteirac.srmanager.Model.News;
 
 /**
  * Created by Jean on 07/05/2017.
  */
 
-public class DAONews implements DatabaseConstants {
-
-    private SQLiteDatabase db;
+public class DAONews extends DAOAbstract implements DatabaseConstants {
 
     public DAONews(SQLiteDatabase db) {
         this.db = db;
     }
 
-    private ContentValues prepareAddData(News newsObj) {
+    @Override
+    protected ContentValues prepareAddData(Entity entityObj) {
 
+        News newsObj = (News) entityObj;
         ContentValues values = new ContentValues();
         values.put(NEWS_TITLE, newsObj.getTitle());
         values.put(NEWS_DATE, newsObj.getDate().getTime());
@@ -35,7 +37,10 @@ public class DAONews implements DatabaseConstants {
         return values;
     }
 
-    private void prepareGetData(News newsObj, Cursor cursor) {
+    @Override
+    protected void prepareGetData(Entity entityObj, Cursor cursor) {
+
+        News newsObj = (News) entityObj;
         newsObj.setId(cursor.getInt(cursor.getColumnIndexOrThrow(NEWS_ID)));
         newsObj.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(NEWS_TITLE)));
         newsObj.setDate(new Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(NEWS_DATE)))));
@@ -43,7 +48,10 @@ public class DAONews implements DatabaseConstants {
         newsObj.setByteImage(cursor.getBlob(cursor.getColumnIndexOrThrow(NEWS_IMAGE)));
     }
 
-    public long addNews(News news) {
+    @Override
+    public long add(Entity entity) {
+
+        News news = (News) entity;
         long row = 0;
         ContentValues values = prepareAddData(news);
 
@@ -57,7 +65,8 @@ public class DAONews implements DatabaseConstants {
         return row;
     }
 
-    public News getNews(int id) {
+    @Override
+    public Entity get(int id) {
         News newsObj = new News();
         Cursor cursor;
 
@@ -107,7 +116,10 @@ public class DAONews implements DatabaseConstants {
         return allNewsObj;
     }
 
-    public int updateNews(News news) {
+    @Override
+    public int update(Entity entity) {
+
+        News news = (News) entity;
         int count = -1;
         ContentValues values = prepareAddData(news);
 
@@ -118,7 +130,8 @@ public class DAONews implements DatabaseConstants {
         return count;
     }
 
-    public int deleteNews(int id) {
+    @Override
+    public int delete(int id) {
         int count = 0;
 
         try {

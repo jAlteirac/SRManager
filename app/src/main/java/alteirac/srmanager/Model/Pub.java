@@ -4,9 +4,8 @@ package alteirac.srmanager.Model;
  * Created by Jean on 06/05/2017.
  */
 
-public class Pub {
+public class Pub extends Entity {
 
-    private int id;
     private String name;
     private float lat;
     private float lng;
