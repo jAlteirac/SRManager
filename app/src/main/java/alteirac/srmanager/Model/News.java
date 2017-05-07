@@ -11,13 +11,14 @@ public class News {
     private int id;
     private String title;
     private Date date;
-    private String shortDescription;
-    private String longDescription;
+    private String description;
     private byte[] byteImage;
 
-    public News (String title, String longDescription) {
+    public News() {}
+
+    public News (String title, String description) {
         this.title = title;
-        this.longDescription = longDescription;
+        this.description = description;
     }
 
     public int getId() {
@@ -44,20 +45,12 @@ public class News {
         this.date = date;
     }
 
-    public String getShortDescription() {
-        return shortDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
-    }
-
-    public String getLongDescription() {
-        return longDescription;
-    }
-
-    public void setLongDescription(String longDescription) {
-        this.longDescription = longDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public byte[] getByteImage() {

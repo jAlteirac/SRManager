@@ -13,6 +13,8 @@ public class Team {
     private List<String> players;
     private byte[] byteImage;
 
+    public Team() {}
+
     public int getId() {
         return id;
     }

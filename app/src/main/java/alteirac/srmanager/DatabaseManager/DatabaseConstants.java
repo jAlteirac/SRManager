@@ -15,17 +15,15 @@ public interface DatabaseConstants {
     String MATCH_DATE = "date";
     String MATCH_LOCATION = "location";
     String MATCH_REFEREE = "referee";
-    //Team 1 ?
-    //Team 2 ?
-    //pubs ?
+    String MATCH_TEAM1 = "id_team1";
+    String MATCH_TEAM2 = "id_team2";
 
     //TABLE NEWS
     String TABLE_NEWS = "News";
     String NEWS_ID = "id";
     String NEWS_TITLE = "title";
     String NEWS_DATE = "date";
-    String NEWS_SHORT_DESC = "short_description";
-    String NEWS_LONG_DESC = "long_description";
+    String NEWS_DESC = "description";
     String NEWS_IMAGE = "image";
 
     //TABLE PUB
@@ -40,9 +38,17 @@ public interface DatabaseConstants {
     String TABLE_TEAM = "Team";
     String TEAM_ID = "id";
     String TEAM_NAME = "name";
-    //players ?
     String TEAM_IMAGE = "image";
 
+    //TABLE MATCH_PUB (MP)
+    String TABLE_MP = "MatchPub";
+    String MP_MATCH = "id_match";
+    String MP_PUB = "id_pub";
+
+    //TABLE TEAM_PLAYER (TP)
+    String TABLE_TP = "TeamPlayer";
+    String TP_TEAM = "id_team";
+    String TP_PLAYER = "player_name";
 
 
 

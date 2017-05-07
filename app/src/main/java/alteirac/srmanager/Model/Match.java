@@ -17,6 +17,8 @@ public class Match {
     private Team team2;
     private List<Pub> pubs;
 
+    public Match() {}
+
     public int getId() {
         return id;
     }

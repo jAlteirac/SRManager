@@ -12,6 +12,8 @@ public class Pub {
     private float lng;
     private byte[] byteImage;
 
+    public Pub() {}
+
     public int getId() {
         return id;
     }
