@@ -51,18 +51,18 @@ public class DAONews extends DAOAbstract implements DatabaseConstants {
     @Override
     public long add(Entity entity) {
 
-        News news = (News) entity;
-        long row = 0;
-        ContentValues values = prepareAddData(news);
+        News newsObj = (News) entity;
+        long rowID = -1;
+        ContentValues values = prepareAddData(newsObj);
 
         try {
-            row = db.insert(TABLE_NEWS, null, values);
+            rowID = db.insert(TABLE_NEWS, null, values);
         } catch (Exception e) {
             Log.e("DB ERROR", e.toString());
             e.printStackTrace();
         }
 
-        return row;
+        return rowID;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class DAONews extends DAOAbstract implements DatabaseConstants {
         return newsObj;
     }
 
-    public List<News> getAllNews() {
+    public ArrayList<News> getAllNews() {
         ArrayList<News> allNewsObj = new ArrayList<News>();
         Cursor cursor;
         News newsObj;
@@ -119,20 +119,25 @@ public class DAONews extends DAOAbstract implements DatabaseConstants {
     @Override
     public int update(Entity entity) {
 
-        News news = (News) entity;
+        News newsObj = (News) entity;
         int count = -1;
-        ContentValues values = prepareAddData(news);
+        ContentValues values = prepareAddData(newsObj);
 
         String whereClause = NEWS_ID + "=?";
-        String whereArgs[] = new String[] { String.valueOf(news.getId()) };
+        String whereArgs[] = new String[] { String.valueOf(newsObj.getId()) };
 
-        count = db.update(TABLE_NEWS, values, whereClause, whereArgs);
+        try {
+            count = db.update(TABLE_NEWS, values, whereClause, whereArgs);
+        }catch (Exception e) {
+            Log.e("DB ERROR", e.toString());
+            e.printStackTrace();
+        }
         return count;
     }
 
     @Override
     public int delete(int id) {
-        int count = 0;
+        int count = -1;
 
         try {
             count = db.delete(TABLE_NEWS, NEWS_ID + "=" + id, null);

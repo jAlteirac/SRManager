@@ -1,5 +1,6 @@
 package alteirac.srmanager.Model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class Match extends Entity {
     private String referee;
     private Team team1;
     private Team team2;
-    private List<Pub> pubs;
+    private ArrayList<Pub> pubs;
 
     public Match() {}
 
@@ -66,11 +67,11 @@ public class Match extends Entity {
         this.team2 = team2;
     }
 
-    public List<Pub> getPubs() {
+    public ArrayList<Pub> getPubs() {
         return pubs;
     }
 
-    public void setPubs(List<Pub> pubs) {
+    public void setPubs(ArrayList<Pub> pubs) {
         this.pubs = pubs;
     }
 }

@@ -1,5 +1,6 @@
 package alteirac.srmanager.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
 public class Team extends Entity {
 
     private String name;
-    private List<String> players;
+    private ArrayList<String> players;
     private byte[] byteImage;
 
     public Team() {}
@@ -30,11 +31,11 @@ public class Team extends Entity {
         this.name = name;
     }
 
-    public List<String> getPlayers() {
+    public ArrayList<String> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<String> players) {
+    public void setPlayers(ArrayList<String> players) {
         this.players = players;
     }
 

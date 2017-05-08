@@ -17,7 +17,7 @@ import alteirac.srmanager.Fragment.NewsSlideFragment;
 public class NewsSlidePagerAdapter extends FragmentStatePagerAdapter {
 
 
-    private static final int NUMBER_OF_TABS = 4;
+    private static final int NUMBER_OF_TABS = 2;
 
 
     public NewsSlidePagerAdapter(FragmentManager fm) {

@@ -11,17 +11,27 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import alteirac.srmanager.Adapter.NewsSlidePagerAdapter;
+import alteirac.srmanager.DatabaseManager.DAO.DAONews;
+import alteirac.srmanager.DatabaseManager.DatabaseManager;
 import alteirac.srmanager.Fragment.NewsSlideFragment;
+import alteirac.srmanager.Model.News;
 import alteirac.srmanager.R;
 
 public class MainActivity extends AppCompatActivity {
 
 
     private ViewPager mPager;
-
-
     private PagerAdapter mPagerAdapter;
+
+    public static Map<Integer, News> mapNews;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

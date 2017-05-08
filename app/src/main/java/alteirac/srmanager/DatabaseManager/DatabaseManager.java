@@ -70,12 +70,12 @@ public class DatabaseManager implements  DatabaseConstants {
             String create_table_match_pub =
                     "create table " + TABLE_MP + " ("
                     + MP_MATCH + " integer not null,"
-                    + MP_PUB + " integer not null," + ");";
+                    + MP_PUB + " integer not null" + ");";
 
             String create_table_team_player =
                     "create table " + TABLE_TP + " ("
                     + TP_TEAM + " integer not null,"
-                    + TP_PLAYER + " text not null," + ");";
+                    + TP_PLAYER + " text not null" + ");";
 
             db.execSQL(create_table_team);
             db.execSQL(create_table_match);
