@@ -23,7 +23,7 @@ import alteirac.srmanager.R;
 
 public class NewsSlideFragment extends Fragment {
 
-    private Map<Integer, News> news;
+    private Map<Integer, News> news = new HashMap<Integer, News>();
 
     public static NewsSlideFragment newInstance(int news_id) {
 
@@ -47,13 +47,16 @@ public class NewsSlideFragment extends Fragment {
                 R.layout.fragment_slide_news, container, false);
 
         final int news_id = getArguments().getInt("news_id");
-        Log.d("DEBUG","news_id : "+news_id);
 
-        TextView textTitle = (TextView) v.findViewById(R.id.NewsTitle);
-        TextView textDesc = (TextView) v.findViewById(R.id.NewsDesc);
+        news = MainActivity.mapNews;
+        if (news != null && news.size() > news_id) {
 
-        textTitle.setText(news.get(news_id).getTitle());
-        textDesc.setText(news.get(news_id).getDescription());
+            TextView textTitle = (TextView) v.findViewById(R.id.NewsTitle);
+            TextView textDesc = (TextView) v.findViewById(R.id.NewsDesc);
+
+            textTitle.setText(news.get(news_id).getTitle());
+            textDesc.setText(news.get(news_id).getDescription());
+        }
 
         return v;
     }

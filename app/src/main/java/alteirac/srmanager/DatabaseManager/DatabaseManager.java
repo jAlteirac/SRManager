@@ -38,7 +38,7 @@ public class DatabaseManager implements  DatabaseConstants {
             String create_table_team =
                     "create table " + TABLE_TEAM + " ("
                     + TEAM_ID + " integer primary key autoincrement not null,"
-                    + TEAM_NAME + " integer not null,"
+                    + TEAM_NAME + " text not null,"
                     + TEAM_IMAGE + " blob" + ");";
 
             String create_table_match =
