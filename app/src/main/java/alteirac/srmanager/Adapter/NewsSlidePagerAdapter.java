@@ -17,11 +17,13 @@ import alteirac.srmanager.Fragment.NewsSlideFragment;
 public class NewsSlidePagerAdapter extends FragmentStatePagerAdapter {
 
 
-    private static final int NUMBER_OF_TABS = 2;
+    private static int NUMBER_OF_TABS = 4;
 
 
-    public NewsSlidePagerAdapter(FragmentManager fm) {
+    public NewsSlidePagerAdapter(FragmentManager fm, int size) {
+
         super(fm);
+        NUMBER_OF_TABS = size;
     }
 
     @Override

@@ -2,7 +2,11 @@ package alteirac.srmanager.WebService;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -28,53 +32,51 @@ import alteirac.srmanager.Model.News;
  * Created by Jean on 10/05/2017.
  */
 
-public class DBLoader extends AsyncTaskLoader<ArrayList<News>> {
+public class DBLoader {
 
     private final String URL = "http://193.250.94.183:90/my-rest-api/api/news";
+    
+    public DBLoader() {
 
-    ArrayList<News> listNews = new ArrayList<>();
-
-    public DBLoader(Context context) {
-        super(context);
     }
 
-    @Override
-    public ArrayList<News> loadInBackground() {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    URL url = new URL(URL);
-                    Gson gson = new Gson();
+    public ArrayList<News> exec()
+    {
+        try {
+            ArrayList<News> listNews = new ArrayList<>();
+            URL url = new URL(URL);
+            Gson gson = new Gson();
 
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.connect();
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.connect();
 
-                    if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
-                        InputStream inputStream = urlConnection.getInputStream();
-                        if (inputStream != null) {
-                            //String json = IOUtils.toString(inputStream, "UTF-8");
-                            //Log.e("WebService", json);
-                            //listNews = gson.fromJson(json, new TypeToken<ArrayList<News>>(){}.getType());
+                InputStream inputStream = urlConnection.getInputStream();
+                if (inputStream != null) {
+                    //String json = IOUtils.toString(inputStream, "UTF-8");
+                    //Log.e("WebService", json);
+                    //listNews = gson.fromJson(json, new TypeToken<ArrayList<News>>(){}.getType());
 
-                            JsonReader reader = new JsonReader(new InputStreamReader(inputStream));
-                            JsonParser parser = new JsonParser();
-                            JsonArray jArray =  (JsonArray) parser.parse(reader).getAsJsonObject().get("news");
-                            for(JsonElement obj : jArray )
-                            {
-                                News news = gson.fromJson(obj , News.class);
-                                MainActivity.listNews.add(news);
-                            }
-                        }
+                    JsonReader reader = new JsonReader(new InputStreamReader(inputStream));
+                    JsonParser parser = new JsonParser();
+                    JsonArray jArray =  (JsonArray) parser.parse(reader).getAsJsonObject().get("news");
+                    for(JsonElement obj : jArray )
+                    {
+                        News news = gson.fromJson(obj , News.class);
+                        listNews.add(news);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("WebService", "Impossible de rapatrier les données.");
+                    return listNews;
                 }
             }
-        });
-        thread.start();
-        return listNews;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("WebService", "Impossible de rapatrier les données.");
+        }
+
+        return null;
+
     }
+
+
 }
