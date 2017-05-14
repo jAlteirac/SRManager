@@ -26,6 +26,24 @@ public class DatabaseManager implements  DatabaseConstants {
         return db;
     }
 
+    public void DeleteAll() {
+
+        db.execSQL("DELETE FROM " + TABLE_MP);
+        db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_MP + "'");
+        db.execSQL("DELETE FROM " + TABLE_TP);
+        db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_TP + "'");
+        db.execSQL("DELETE FROM " + TABLE_PUB);
+        db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_PUB + "'");
+        db.execSQL("DELETE FROM " + TABLE_NEWS);
+        db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_NEWS + "'");
+        db.execSQL("DELETE FROM " + TABLE_MATCH);
+        db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_MATCH + "'");
+        db.execSQL("DELETE FROM " + TABLE_TEAM);
+        db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_TEAM + "'");
+
+    }
+
+
     private class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
 
         public CustomSQLiteOpenHelper(Context context) {

@@ -27,19 +27,17 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textLabelNextMatch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="A venir"
+                android:text="@string/textNextMatch"
                 android:textAlignment="center" />
 
             <TextView
-                android:id="@+id/textNextMatch"
+                android:id="@+id/text_next_match"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="La Rochelle - Bordeaux"
                 android:textAlignment="center" />
 
         </LinearLayout>

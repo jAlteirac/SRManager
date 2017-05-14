@@ -12,9 +12,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import alteirac.srmanager.Activity.MainActivity;
+import alteirac.srmanager.Adapter.NewsSlidePagerAdapter;
 import alteirac.srmanager.Model.News;
 import alteirac.srmanager.R;
 /**
@@ -23,7 +25,8 @@ import alteirac.srmanager.R;
 
 public class NewsSlideFragment extends Fragment {
 
-    private Map<Integer, News> news = new HashMap<Integer, News>();
+    private Map<Integer, News> news;
+
 
     public static NewsSlideFragment newInstance(int news_id) {
 
@@ -47,8 +50,8 @@ public class NewsSlideFragment extends Fragment {
                 R.layout.fragment_slide_news, container, false);
 
         final int news_id = getArguments().getInt("news_id");
+        news = NewsSlidePagerAdapter.map;
 
-        news = MainActivity.mapNews;
         if (news != null && news.size() > news_id) {
 
             TextView textTitle = (TextView) v.findViewById(R.id.NewsTitle);

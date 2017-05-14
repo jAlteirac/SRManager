@@ -28,6 +28,31 @@ public class DAOMatch extends DAOAbstract implements DatabaseConstants {
         this.db = db;
     }
 
+    public Match getLastMatch() {
+
+        Cursor cursor;
+
+        try {
+            cursor = db.rawQuery("SELECT MAX(" + MATCH_ID + ") AS MAX FROM " + TABLE_MATCH, null);
+            int id = -1;
+            if (cursor != null) {
+                cursor.moveToFirst();
+                if (!cursor.isAfterLast()) {
+                    do {
+                        int i = cursor.getInt(cursor.getColumnIndex("MAX"));
+                        Match match = (Match)get(i);
+                        return match;
+                    } while (cursor.moveToNext());
+                }
+            }
+        } catch (SQLException e) {
+            Log.e("DB ERROR", e.toString());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     @Override
     public long add(Entity entity) {
         Match matchObj = (Match) entity;
@@ -141,7 +166,7 @@ public class DAOMatch extends DAOAbstract implements DatabaseConstants {
         values.put(MATCH_LOCATION, matchObj.getLocation());
         values.put(MATCH_REFEREE, matchObj.getReferee());
         values.put(MATCH_TEAM1, matchObj.getTeam1().getId());
-        values.put(MATCH_TEAM1, matchObj.getTeam2().getId());
+        values.put(MATCH_TEAM2, matchObj.getTeam2().getId());
         return values;
     }
 

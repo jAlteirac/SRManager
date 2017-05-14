@@ -6,6 +6,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
 
 
 import com.google.gson.Gson;
@@ -24,6 +25,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 import alteirac.srmanager.Adapter.NewsSlidePagerAdapter;
+import alteirac.srmanager.DatabaseManager.DAO.DAOMatch;
+import alteirac.srmanager.DatabaseManager.DAO.DAONews;
+import alteirac.srmanager.DatabaseManager.DatabaseManager;
+import alteirac.srmanager.Model.Match;
 import alteirac.srmanager.Model.News;
 import alteirac.srmanager.R;
 import alteirac.srmanager.WebService.DBLoader;
@@ -34,8 +39,12 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
 
-    public static Map<Integer, News> mapNews;
-    public static ArrayList<News> listNews;
+    private Match match;
+    private ArrayList<News> listNews;
+    private DatabaseManager dm;
+    private DAONews daoNews;
+    private DAOMatch daoMatch;
+
 
 
     @Override
@@ -43,43 +52,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dm = new DatabaseManager(this);
+        DAONews daoNews = new DAONews(dm.getDataBase());
+        listNews = daoNews.getAllNews();
 
-        new AsyncTask<Void, Void, Void>(){
+        daoMatch = new DAOMatch(dm.getDataBase());
+        match = daoMatch.getLastMatch();
 
-            @Override
-            protected Void doInBackground(Void[] params) {
-
-                DBLoader dbLoader = new DBLoader();
-                listNews = dbLoader.exec();
-
-                mapNews = new HashMap<Integer, News>();
-
-                if (listNews != null) {
-                    listNews.add(new News("Super titre de news !", "Voilà c'est une news test on prend du temps."));
-                    Iterator<News> it = listNews.iterator();
-                    int i = 0;
-                    while (it.hasNext()) {
-                        News news = it.next();
-                        mapNews.put(i, news);
-                        i++;
-                    }
-                }
-
-                return null;
-
-            }
-
-            @Override
-            protected void onPostExecute(Void result) {
-
-                mPager = (ViewPager) findViewById(R.id.pager);
-                mPagerAdapter = new NewsSlidePagerAdapter(getSupportFragmentManager(), listNews.size());
-                mPager.setAdapter(mPagerAdapter);
-            }
-
-        }.execute();
+        TextView affichMatch = (TextView) findViewById(R.id.text_next_match);
+        affichMatch.setText(match.getTeam1().getName() + "  -  " + match.getTeam2().getName());
 
 
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPagerAdapter = new NewsSlidePagerAdapter(getSupportFragmentManager(), listNews.size(), listNews);
+        mPager.setAdapter(mPagerAdapter);
     }
 
     @Override
