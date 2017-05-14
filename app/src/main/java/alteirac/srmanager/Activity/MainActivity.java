@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,8 +60,17 @@ public class MainActivity extends AppCompatActivity {
         daoMatch = new DAOMatch(dm.getDataBase());
         match = daoMatch.getLastMatch();
 
-        TextView affichMatch = (TextView) findViewById(R.id.text_next_match);
-        affichMatch.setText(match.getTeam1().getName() + "  -  " + match.getTeam2().getName());
+        TextView affichMatch = (TextView) findViewById(R.id.text_next_match_eq1);
+        affichMatch.setText(match.getTeam1().getName());
+        TextView affichMatch2 = (TextView) findViewById(R.id.text_next_match_eq2);
+        affichMatch2.setText(match.getTeam2().getName());
+
+
+        TextView affichMatchDate = (TextView) findViewById(R.id.text_next_match_date);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        affichMatchDate.setText(sdf.format(match.getDate()));
+
 
 
         mPager = (ViewPager) findViewById(R.id.pager);
