@@ -3,10 +3,13 @@ package alteirac.srmanager.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -49,6 +52,10 @@ public class NewsSlideFragment extends Fragment {
         ViewGroup v = (ViewGroup) inflater.inflate(
                 R.layout.fragment_slide_news, container, false);
 
+        final ImageButton rightNav = (ImageButton) v.findViewById(R.id.right_nav);
+        final ImageButton leftNav = (ImageButton) v.findViewById(R.id.left_nav);
+
+
         final int news_id = getArguments().getInt("news_id");
         news = NewsSlidePagerAdapter.map;
 
@@ -61,7 +68,26 @@ public class NewsSlideFragment extends Fragment {
             textDesc.setText(news.get(news_id).getDescription());
         }
 
+        rightNav.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ViewPager mPager = ((MainActivity)getActivity()).getViewPager();
+                mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+            }
+
+        });
+
+        leftNav.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ViewPager mPager = ((MainActivity)getActivity()).getViewPager();
+                mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+            }
+
+        });
+
         return v;
     }
-
 }

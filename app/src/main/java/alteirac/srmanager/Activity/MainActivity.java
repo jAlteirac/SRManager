@@ -6,6 +6,8 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 
@@ -60,22 +62,22 @@ public class MainActivity extends AppCompatActivity {
         daoMatch = new DAOMatch(dm.getDataBase());
         match = daoMatch.getLastMatch();
 
-        TextView affichMatch = (TextView) findViewById(R.id.text_next_match_eq1);
-        affichMatch.setText(match.getTeam1().getName());
-        TextView affichMatch2 = (TextView) findViewById(R.id.text_next_match_eq2);
-        affichMatch2.setText(match.getTeam2().getName());
+        if (match != null) {
+            TextView affichMatch = (TextView) findViewById(R.id.text_next_match_eq1);
+            TextView affichMatch2 = (TextView) findViewById(R.id.text_next_match_eq2);
+            TextView affichMatchDate = (TextView) findViewById(R.id.text_next_match_date);
 
-
-        TextView affichMatchDate = (TextView) findViewById(R.id.text_next_match_date);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        affichMatchDate.setText(sdf.format(match.getDate()));
-
+            affichMatch.setText(match.getTeam1().getName());
+            affichMatch2.setText(match.getTeam2().getName());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            affichMatchDate.setText(sdf.format(match.getDate()));
+        }
 
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new NewsSlidePagerAdapter(getSupportFragmentManager(), listNews.size(), listNews);
         mPager.setAdapter(mPagerAdapter);
+
     }
 
     @Override
@@ -87,5 +89,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public ViewPager getViewPager() {
+        if (mPager == null) {
+            mPager = (ViewPager) findViewById(R.id.pager);
+        }
+        return mPager;
+    }
 
 }
