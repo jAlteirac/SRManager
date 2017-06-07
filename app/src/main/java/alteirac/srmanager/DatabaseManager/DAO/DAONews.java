@@ -1,9 +1,12 @@
 package alteirac.srmanager.DatabaseManager.DAO;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -21,8 +24,8 @@ import alteirac.srmanager.Model.News;
 
 public class DAONews extends DAOAbstract implements DatabaseConstants {
 
-    public DAONews(SQLiteDatabase db) {
-        this.db = db;
+    public DAONews(ContentResolver contentResolver) {
+        super(contentResolver);
     }
 
     @Override
@@ -55,11 +58,10 @@ public class DAONews extends DAOAbstract implements DatabaseConstants {
         long rowID = -1;
         ContentValues values = prepareAddData(newsObj);
 
-        try {
-            rowID = db.insert(TABLE_NEWS, null, values);
-        } catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
+        Uri uriAdd = contentResolver.insert(DatabaseConstants.CONTENT_URI_ALL_NEWS, values);
+        String lastPathSegment = uriAdd.getLastPathSegment();
+        if (lastPathSegment != null) {
+            rowID = Long.valueOf(lastPathSegment);
         }
 
         return rowID;
@@ -70,19 +72,14 @@ public class DAONews extends DAOAbstract implements DatabaseConstants {
         News newsObj = new News();
         Cursor cursor;
 
-        try {
-            cursor = db.query(TABLE_NEWS,
-                            new String[] { NEWS_ID, NEWS_TITLE, NEWS_DATE, NEWS_DESC, NEWS_IMAGE},
-                            NEWS_ID + "=" + id, null, null, null, null, null);
-            cursor.moveToFirst();
-            if (!cursor.isAfterLast()) {
-                do {
-                    prepareGetData(newsObj, cursor);
-                } while (cursor.moveToNext());
-            }
-        } catch (SQLException e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_NEWS, id);
+        cursor = contentResolver.query(uri, new String[] { NEWS_ID, NEWS_TITLE, NEWS_DATE, NEWS_DESC, NEWS_IMAGE}, null, null, null, null);
+
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                prepareGetData(newsObj, cursor);
+            } while (cursor.moveToNext());
         }
 
         return newsObj;
@@ -93,24 +90,16 @@ public class DAONews extends DAOAbstract implements DatabaseConstants {
         Cursor cursor;
         News newsObj;
 
-        try {
+        cursor = contentResolver.query(DatabaseConstants.CONTENT_URI_ALL_NEWS, new String[] { NEWS_ID, NEWS_TITLE, NEWS_DATE, NEWS_DESC, NEWS_IMAGE}, null, null, null, null);
 
-            cursor = db.query(TABLE_NEWS,
-                            new String[] { NEWS_ID, NEWS_TITLE, NEWS_DATE, NEWS_DESC, NEWS_IMAGE },
-                            null, null, null, null, null);
-            cursor.moveToFirst();
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                newsObj = new News();
+                prepareGetData(newsObj, cursor);
+                allNewsObj.add(newsObj);
 
-            if (!cursor.isAfterLast()) {
-                do {
-                    newsObj = new News();
-                    prepareGetData(newsObj, cursor);
-                    allNewsObj.add(newsObj);
-
-                } while (cursor.moveToNext());
-            }
-        } catch (SQLException e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
+            } while (cursor.moveToNext());
         }
 
         return allNewsObj;
@@ -123,15 +112,9 @@ public class DAONews extends DAOAbstract implements DatabaseConstants {
         int count = -1;
         ContentValues values = prepareAddData(newsObj);
 
-        String whereClause = NEWS_ID + "=?";
-        String whereArgs[] = new String[] { String.valueOf(newsObj.getId()) };
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_NEWS, newsObj.getId());
+        count = contentResolver.update(uri, values, null, null);
 
-        try {
-            count = db.update(TABLE_NEWS, values, whereClause, whereArgs);
-        }catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
-        }
         return count;
     }
 
@@ -139,12 +122,8 @@ public class DAONews extends DAOAbstract implements DatabaseConstants {
     public int delete(int id) {
         int count = -1;
 
-        try {
-            count = db.delete(TABLE_NEWS, NEWS_ID + "=" + id, null);
-        } catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
-        }
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_NEWS, id);
+        count = contentResolver.delete(uri, null, null);
 
         return count;
     }

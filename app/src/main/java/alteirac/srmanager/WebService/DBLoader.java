@@ -41,19 +41,20 @@ import alteirac.srmanager.Model.Team;
 
 public class DBLoader {
 
-    private final String URL_allNews = "http://88.160.200.162/srmanager/news";
-    private final String URL_lastMatch = "http://88.160.200.162/srmanager/match";
+    private final String URL = "http://86.233.167.190:90/srmanager";
+    private final String URL_allNews = URL+"/news";
+    private final String URL_nextMatch = URL+"/match";
     Gson gson;
     
     public DBLoader() {
         gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
     }
 
-    public Match getLastMatch() {
+    public Match getNextMatch() {
         try {
             Match match = new Match();
 
-            URL url = new URL(URL_lastMatch);
+            URL url = new URL(URL_nextMatch);
 
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -112,7 +113,7 @@ public class DBLoader {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("WebService", "Impossible de rapatrier les données.");
+            Log.e("WebService", "Impossible de rapatrier les données Match.");
         }
 
         return null;
@@ -148,7 +149,7 @@ public class DBLoader {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("WebService", "Impossible de rapatrier les données.");
+            Log.e("WebService", "Impossible de rapatrier les données News.");
         }
 
         return null;

@@ -26,6 +26,9 @@
         <activity android:name=".Activity.NewsDetail" />
         <activity android:name=".Activity.MatchDetail" />
         <activity android:name=".Activity.PubsDetail"></activity>
+        <provider android:name=".DatabaseManager.Provider.SRManagerContentProvider"
+            android:authorities="alteirac.srmanager.provider">
+            </provider>
     </application>
 
 </manifest>

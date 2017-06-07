@@ -1,9 +1,12 @@
 package alteirac.srmanager.DatabaseManager.DAO;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.util.Log;
 
 import alteirac.srmanager.DatabaseManager.DatabaseConstants;
@@ -16,8 +19,8 @@ import alteirac.srmanager.Model.Pub;
 
 public class DAOPub extends DAOAbstract implements DatabaseConstants {
 
-    public DAOPub(SQLiteDatabase db) {
-        this.db = db;
+    public DAOPub(ContentResolver contentResolver) {
+        super(contentResolver);
     }
 
     @Override
@@ -27,11 +30,10 @@ public class DAOPub extends DAOAbstract implements DatabaseConstants {
         long rowID = -1;
         ContentValues values = prepareAddData(pub);
 
-        try {
-            rowID = db.insert(TABLE_PUB, null, values);
-        } catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
+        Uri uriAdd = contentResolver.insert(DatabaseConstants.CONTENT_URI_ALL_PUB, values);
+        String lastPathSegment = uriAdd.getLastPathSegment();
+        if (lastPathSegment != null) {
+            rowID = Long.valueOf(lastPathSegment);
         }
 
         return rowID;
@@ -42,19 +44,14 @@ public class DAOPub extends DAOAbstract implements DatabaseConstants {
         Pub pubObj = new Pub();
         Cursor cursor;
 
-        try {
-            cursor = db.query(TABLE_PUB,
-                    new String[] { PUB_ID, PUB_NAME, PUB_LAT, PUB_LNG, PUB_IMAGE},
-                    PUB_ID + "=" + id, null, null, null, null, null);
-            cursor.moveToFirst();
-            if (!cursor.isAfterLast()) {
-                do {
-                    prepareGetData(pubObj, cursor);
-                } while (cursor.moveToNext());
-            }
-        } catch (SQLException e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_PUB, id);
+        cursor = contentResolver.query(uri, new String[] { PUB_ID, PUB_NAME, PUB_LAT, PUB_LNG, PUB_IMAGE}, null, null, null, null);
+
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                prepareGetData(pubObj, cursor);
+            } while (cursor.moveToNext());
         }
 
         return pubObj;
@@ -66,15 +63,9 @@ public class DAOPub extends DAOAbstract implements DatabaseConstants {
         int count = -1;
         ContentValues values = prepareAddData(pub);
 
-        String whereClause = PUB_ID + "=?";
-        String whereArgs[] = new String[] { String.valueOf(pub.getId()) };
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_PUB, pub.getId());
+        count = contentResolver.update(uri, values, null, null);
 
-        try {
-            count = db.update(TABLE_PUB, values, whereClause, whereArgs);
-        }catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
-        }
         return count;
     }
 
@@ -82,12 +73,8 @@ public class DAOPub extends DAOAbstract implements DatabaseConstants {
     public int delete(int id) {
         int count = -1;
 
-        try {
-            count = db.delete(TABLE_PUB, PUB_ID + "=" + id, null);
-        } catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
-        }
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_PUB, id);
+        count = contentResolver.delete(uri, null, null);
 
         return count;
     }

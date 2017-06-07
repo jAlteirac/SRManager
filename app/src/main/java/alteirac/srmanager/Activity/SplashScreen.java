@@ -1,7 +1,9 @@
 package alteirac.srmanager.Activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.AsyncTaskLoader;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,38 +35,49 @@ import alteirac.srmanager.WebService.DBLoader;
 
 public class SplashScreen extends Activity {
 
-    SQLiteDatabase db;
     DAONews daoNews;
     DAOMatch daoMatch;
     DAOTeam daoTeam;
     DAOPub daoPub;
+
+    ContentResolver contentResolver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splashscreen);
 
-        DatabaseManager dm = new DatabaseManager(this);
-        dm.DeleteAll();
-        db = dm.getDataBase();
+        contentResolver = getContentResolver();
+
+        ImageView imageView = (ImageView) findViewById(R.id.image_splash);
+        imageView.setImageResource(R.drawable.sr);
+
+        DatabaseManager.getInstance(this).DeleteAll();
         new WSCall().execute();
 
     }
 
-    private class WSCall extends AsyncTask<Void, Void, Void> {
+    private class WSCall extends AsyncTask<Void, String, Void> {
+
+        private ProgressDialog progressDialog;
+
+        public WSCall() {
+            progressDialog = ProgressDialog.show(SplashScreen.this,"", "Loading...", true);
+        }
 
         @Override
         protected Void doInBackground(Void... params) {
-
             ArrayList<News> listNews;
             Match match;
 
             DBLoader dbLoader = new DBLoader();
+
+            publishProgress("Loading news...");
             listNews = dbLoader.getAllNews();
 
 
             if (listNews != null) {
-                daoNews = new DAONews(db);
+                daoNews = new DAONews(contentResolver);
                 Iterator<News> it = listNews.iterator();
                 while (it.hasNext()) {
                     News news = it.next();
@@ -71,11 +85,14 @@ public class SplashScreen extends Activity {
                 }
             }
 
-            match = dbLoader.getLastMatch();
+
+            publishProgress("Loading match...");
+
+            match = dbLoader.getNextMatch();
             if (match != null) {
-                daoMatch = new DAOMatch(db);
-                daoTeam = new DAOTeam(db);
-                daoPub = new DAOPub(db);
+                daoMatch = new DAOMatch(contentResolver);
+                daoTeam = new DAOTeam(contentResolver);
+                daoPub = new DAOPub(contentResolver);
 
                 Team team1 = match.getTeam1();
                 long id = daoTeam.add(team1);
@@ -110,9 +127,16 @@ public class SplashScreen extends Activity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            progressDialog.dismiss();
 
             startActivity(new Intent(SplashScreen.this, MainActivity.class));
             finish();
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            progressDialog.setMessage(values[0]);
         }
 
 

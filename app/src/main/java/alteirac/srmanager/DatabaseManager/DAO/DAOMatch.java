@@ -1,9 +1,12 @@
 package alteirac.srmanager.DatabaseManager.DAO;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -23,9 +26,8 @@ import alteirac.srmanager.Model.Team;
 
 public class DAOMatch extends DAOAbstract implements DatabaseConstants {
 
-
-    public DAOMatch(SQLiteDatabase db) {
-        this.db = db;
+    public DAOMatch(ContentResolver contentResolver) {
+        super(contentResolver);
     }
 
     public Match getLastMatch() {
@@ -59,11 +61,10 @@ public class DAOMatch extends DAOAbstract implements DatabaseConstants {
         long rowID = -1;
         ContentValues values = prepareAddData(matchObj);
 
-        try {
-            rowID = db.insert(TABLE_MATCH, null, values);
-        } catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
+        Uri uriAdd = contentResolver.insert(DatabaseConstants.CONTENT_URI_ALL_MATCH, values);
+        String lastPathSegment = uriAdd.getLastPathSegment();
+        if (lastPathSegment != null) {
+            rowID = Long.valueOf(lastPathSegment);
         }
 
         ArrayList<Pub> pubs = matchObj.getPubs();
@@ -73,12 +74,7 @@ public class DAOMatch extends DAOAbstract implements DatabaseConstants {
             ContentValues values_tp = new ContentValues();
             values_tp.put(MP_MATCH, rowID);
             values_tp.put(MP_PUB, it.next().getId());
-            try {
-                db.insert(TABLE_MP, null, values_tp);
-            } catch (Exception e) {
-                Log.e("DB ERROR", e.toString());
-                e.printStackTrace();
-            }
+            contentResolver.insert(DatabaseConstants.CONTENT_URI_ALL_MATCH_PUB, values_tp);
         }
 
         return rowID;
@@ -89,19 +85,14 @@ public class DAOMatch extends DAOAbstract implements DatabaseConstants {
         Match matchObj = new Match();
         Cursor cursor;
 
-        try {
-            cursor = db.query(TABLE_MATCH,
-                    new String[] { MATCH_ID, MATCH_DATE, MATCH_LOCATION, MATCH_REFEREE, MATCH_TEAM1, MATCH_TEAM2},
-                    MATCH_ID + "=" + id, null, null, null, null, null);
-            cursor.moveToFirst();
-            if (!cursor.isAfterLast()) {
-                do {
-                    prepareGetData(matchObj, cursor);
-                } while (cursor.moveToNext());
-            }
-        } catch (SQLException e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_MATCH, id);
+        cursor = contentResolver.query(uri, new String[] { MATCH_ID, MATCH_DATE, MATCH_LOCATION, MATCH_REFEREE, MATCH_TEAM1, MATCH_TEAM2}, null, null, null, null);
+
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                prepareGetData(matchObj, cursor);
+            } while (cursor.moveToNext());
         }
 
         return matchObj;
@@ -113,16 +104,12 @@ public class DAOMatch extends DAOAbstract implements DatabaseConstants {
         int count = -1;
         ContentValues values = prepareAddData(matchObj);
 
-        String whereClause = MATCH_ID + "=?";
-        String whereArgs[] = new String[] { String.valueOf(matchObj.getId()) };
 
-        try {
-            db.delete(TABLE_MP, MP_MATCH + "=" + matchObj.getId(), null);
-            count = db.update(TABLE_MATCH, values, whereClause, whereArgs);
-        }catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
-        }
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_MATCH_PUB, matchObj.getId());
+        contentResolver.delete(uri, null, null);
+
+        uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_MATCH, matchObj.getId());
+        count = contentResolver.update(uri, values, null, null);
 
         ArrayList<Pub> pubs = matchObj.getPubs();
         Iterator<Pub> it = pubs.iterator();
@@ -131,12 +118,7 @@ public class DAOMatch extends DAOAbstract implements DatabaseConstants {
             ContentValues values_tp = new ContentValues();
             values_tp.put(MP_MATCH, matchObj.getId());
             values_tp.put(MP_PUB, it.next().getId());
-            try {
-                db.insert(TABLE_MP, null, values_tp);
-            } catch (Exception e) {
-                Log.e("DB ERROR", e.toString());
-                e.printStackTrace();
-            }
+            contentResolver.insert(DatabaseConstants.CONTENT_URI_ALL_MATCH_PUB, values_tp);
         }
 
         return count;
@@ -146,13 +128,11 @@ public class DAOMatch extends DAOAbstract implements DatabaseConstants {
     public int delete(int id) {
         int count = -1;
 
-        try {
-            db.delete(TABLE_MP, MP_MATCH + "=" + id, null);
-            count = db.delete(TABLE_MATCH, MATCH_ID + "=" + id, null);
-        } catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
-        }
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_MATCH_PUB, id);
+        contentResolver.delete(uri, null, null);
+
+        uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_MATCH, id);
+        count = contentResolver.delete(uri, null, null);
 
         return count;
     }
@@ -176,24 +156,19 @@ public class DAOMatch extends DAOAbstract implements DatabaseConstants {
         matchObj.setId(cursor.getInt(cursor.getColumnIndexOrThrow(MATCH_ID)));
         Cursor cursorTmp;
         ArrayList<Pub> pubs = new ArrayList<Pub>();
-        DAOPub daoPub = new DAOPub(db);
+        DAOPub daoPub = new DAOPub(contentResolver);
 
-        try {
-            cursorTmp = db.query(TABLE_MP,
-                    new String[] { MP_PUB},
-                    MP_MATCH + "=" + matchObj.getId(), null, null, null, null, null);
-            cursorTmp.moveToFirst();
-            if (!cursorTmp.isAfterLast()) {
-                do {
-                    pubs.add((Pub)daoPub.get(cursorTmp.getInt(0)));
-                } while (cursorTmp.moveToNext());
-            }
-        } catch (SQLException e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_MATCH_PUB, matchObj.getId());
+        cursorTmp = contentResolver.query(uri, new String[] { MP_PUB}, null, null, null, null);
+
+        cursorTmp.moveToFirst();
+        if (!cursorTmp.isAfterLast()) {
+            do {
+                pubs.add((Pub)daoPub.get(cursorTmp.getInt(0)));
+            } while (cursorTmp.moveToNext());
         }
 
-        DAOTeam daoTeam = new DAOTeam(db);
+        DAOTeam daoTeam = new DAOTeam(contentResolver);
 
         matchObj.setDate(new Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MATCH_DATE)))));
         matchObj.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(MATCH_LOCATION)));

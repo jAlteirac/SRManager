@@ -3,23 +3,39 @@ package alteirac.srmanager.DatabaseManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.ContactsContract;
 
 /**
  * Created by Jean on 07/05/2017.
  */
 
-public class DatabaseManager implements  DatabaseConstants {
+public final class DatabaseManager implements  DatabaseConstants {
 
 
+    private static volatile DatabaseManager instance = null;
     private SQLiteDatabase db;
-
     private Context context;
 
-    public DatabaseManager(Context context) {
+    private DatabaseManager(Context context) {
         this.context = context;
 
         CustomSQLiteOpenHelper helper = new CustomSQLiteOpenHelper(context);
         this.db = helper.getWritableDatabase();
+    }
+
+    public final static DatabaseManager getInstance() {
+        return getInstance(null);
+    }
+
+    public final static DatabaseManager getInstance(final Context context) {
+        if (DatabaseManager.instance == null) {
+            synchronized (DatabaseManager.class) {
+                if(DatabaseManager.instance == null) {
+                    DatabaseManager.instance = new DatabaseManager(context);
+                }
+            }
+        }
+        return DatabaseManager.instance;
     }
 
     public SQLiteDatabase getDataBase() {

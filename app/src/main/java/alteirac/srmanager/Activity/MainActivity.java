@@ -1,5 +1,6 @@
 package alteirac.srmanager.Activity;
 
+import android.content.ContentResolver;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -44,22 +45,23 @@ public class MainActivity extends AppCompatActivity {
 
     private Match match;
     private ArrayList<News> listNews;
-    private DatabaseManager dm;
     private DAONews daoNews;
     private DAOMatch daoMatch;
 
-
+    ContentResolver contentResolver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dm = new DatabaseManager(this);
-        DAONews daoNews = new DAONews(dm.getDataBase());
+        contentResolver = getContentResolver();
+
+        DAONews daoNews = new DAONews(contentResolver);
         listNews = daoNews.getAllNews();
 
-        daoMatch = new DAOMatch(dm.getDataBase());
+
+        daoMatch = new DAOMatch(contentResolver);
         match = daoMatch.getLastMatch();
 
         if (match != null) {

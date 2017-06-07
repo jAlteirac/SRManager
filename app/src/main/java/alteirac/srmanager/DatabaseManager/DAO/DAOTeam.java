@@ -1,9 +1,12 @@
 package alteirac.srmanager.DatabaseManager.DAO;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -19,9 +22,8 @@ import alteirac.srmanager.Model.Team;
 
 public class DAOTeam extends DAOAbstract implements DatabaseConstants {
 
-
-    public DAOTeam(SQLiteDatabase db) {
-        this.db = db;
+    public DAOTeam(ContentResolver contentResolver) {
+        super(contentResolver);
     }
 
     @Override
@@ -30,11 +32,10 @@ public class DAOTeam extends DAOAbstract implements DatabaseConstants {
         long rowID = -1;
         ContentValues values = prepareAddData(teamObj);
 
-        try {
-            rowID = db.insert(TABLE_TEAM, null, values);
-        } catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
+        Uri uriAdd = contentResolver.insert(DatabaseConstants.CONTENT_URI_ALL_TEAM, values);
+        String lastPathSegment = uriAdd.getLastPathSegment();
+        if (lastPathSegment != null) {
+            rowID = Long.valueOf(lastPathSegment);
         }
 
         ArrayList<String> players = teamObj.getPlayers();
@@ -44,12 +45,7 @@ public class DAOTeam extends DAOAbstract implements DatabaseConstants {
             ContentValues values_tp = new ContentValues();
             values_tp.put(TP_TEAM, rowID);
             values_tp.put(TP_PLAYER, it.next());
-            try {
-                db.insert(TABLE_TP, null, values_tp);
-            } catch (Exception e) {
-                Log.e("DB ERROR", e.toString());
-                e.printStackTrace();
-            }
+            contentResolver.insert(DatabaseConstants.CONTENT_URI_ALL_TEAM_PLAYER, values_tp);
         }
 
         return rowID;
@@ -60,19 +56,14 @@ public class DAOTeam extends DAOAbstract implements DatabaseConstants {
         Team teamObj = new Team();
         Cursor cursor;
 
-        try {
-            cursor = db.query(TABLE_TEAM,
-                    new String[] { TEAM_ID, TEAM_NAME, TEAM_IMAGE},
-                    TEAM_ID + "=" + id, null, null, null, null, null);
-            cursor.moveToFirst();
-            if (!cursor.isAfterLast()) {
-                do {
-                    prepareGetData(teamObj, cursor);
-                } while (cursor.moveToNext());
-            }
-        } catch (SQLException e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_TEAM, id);
+        cursor = contentResolver.query(uri, new String[] {TEAM_ID, TEAM_NAME, TEAM_IMAGE}, null, null, null, null);
+
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                prepareGetData(teamObj, cursor);
+            } while (cursor.moveToNext());
         }
 
         return teamObj;
@@ -84,16 +75,12 @@ public class DAOTeam extends DAOAbstract implements DatabaseConstants {
         int count = -1;
         ContentValues values = prepareAddData(teamObj);
 
-        String whereClause = TEAM_ID + "=?";
-        String whereArgs[] = new String[] { String.valueOf(teamObj.getId()) };
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_TEAM_PLAYER, teamObj.getId());
+        contentResolver.delete(uri, null, null);
 
-        try {
-            db.delete(TABLE_TP, TP_TEAM + "=" + teamObj.getId(), null);
-            count = db.update(TABLE_TEAM, values, whereClause, whereArgs);
-        }catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
-        }
+        uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_TEAM, teamObj.getId());
+        count = contentResolver.update(uri, values, null, null);
+
 
         ArrayList<String> players = teamObj.getPlayers();
         Iterator<String> it = players.iterator();
@@ -102,12 +89,7 @@ public class DAOTeam extends DAOAbstract implements DatabaseConstants {
             ContentValues values_tp = new ContentValues();
             values_tp.put(TP_TEAM, teamObj.getId());
             values_tp.put(TP_PLAYER, it.next());
-            try {
-                db.insert(TABLE_TP, null, values_tp);
-            } catch (Exception e) {
-                Log.e("DB ERROR", e.toString());
-                e.printStackTrace();
-            }
+            contentResolver.insert(DatabaseConstants.CONTENT_URI_ALL_TEAM_PLAYER, values_tp);
         }
 
         return count;
@@ -117,13 +99,11 @@ public class DAOTeam extends DAOAbstract implements DatabaseConstants {
     public int delete(int id) {
         int count = -1;
 
-        try {
-            db.delete(TABLE_TP, TP_TEAM + "=" + id, null);
-            count = db.delete(TABLE_TEAM, TEAM_ID + "=" + id, null);
-        } catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
-        }
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_TEAM_PLAYER, id);
+        contentResolver.delete(uri, null, null);
+
+        uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_TEAM, id);
+        count = contentResolver.delete(uri, null, null);
 
         return count;
     }
@@ -145,19 +125,14 @@ public class DAOTeam extends DAOAbstract implements DatabaseConstants {
         Cursor cursorTmp;
         ArrayList<String> players = new ArrayList<String>();
 
-        try {
-            cursorTmp = db.query(TABLE_TP,
-                    new String[] { TP_PLAYER},
-                    TP_TEAM + "=" + teamObj.getId(), null, null, null, null, null);
-            cursorTmp.moveToFirst();
-            if (!cursorTmp.isAfterLast()) {
-                do {
-                    players.add(cursorTmp.getString(0));
-                } while (cursorTmp.moveToNext());
-            }
-        } catch (SQLException e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
+        Uri uri = ContentUris.withAppendedId(DatabaseConstants.CONTENT_URI_ALL_TEAM_PLAYER, teamObj.getId());
+        cursorTmp = contentResolver.query(uri, new String[] { TP_PLAYER}, null, null, null, null);
+
+        cursorTmp.moveToFirst();
+        if (!cursorTmp.isAfterLast()) {
+            do {
+                players.add(cursorTmp.getString(0));
+            } while (cursorTmp.moveToNext());
         }
         teamObj.setName(cursor.getString(cursor.getColumnIndexOrThrow(TEAM_NAME)));
         teamObj.setPlayers(players);
