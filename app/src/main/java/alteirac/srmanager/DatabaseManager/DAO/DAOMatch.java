@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 import alteirac.srmanager.DatabaseManager.DatabaseConstants;
+import alteirac.srmanager.DatabaseManager.DatabaseManager;
 import alteirac.srmanager.Model.Entity;
 import alteirac.srmanager.Model.Match;
 import alteirac.srmanager.Model.Pub;
@@ -35,7 +36,7 @@ public class DAOMatch extends DAOAbstract implements DatabaseConstants {
         Cursor cursor;
 
         try {
-            cursor = db.rawQuery("SELECT MAX(" + MATCH_ID + ") AS MAX FROM " + TABLE_MATCH, null);
+            cursor = DatabaseManager.getInstance().getDataBase().rawQuery("SELECT MAX(" + MATCH_ID + ") AS MAX FROM " + TABLE_MATCH, null);
             int id = -1;
             if (cursor != null) {
                 cursor.moveToFirst();
@@ -170,7 +171,7 @@ public class DAOMatch extends DAOAbstract implements DatabaseConstants {
 
         DAOTeam daoTeam = new DAOTeam(contentResolver);
 
-        matchObj.setDate(new Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(MATCH_DATE)))));
+        matchObj.setDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(MATCH_DATE))));
         matchObj.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(MATCH_LOCATION)));
         matchObj.setReferee(cursor.getString(cursor.getColumnIndexOrThrow(MATCH_REFEREE)));
         matchObj.setTeam1((Team)daoTeam.get(cursor.getInt(cursor.getColumnIndexOrThrow(MATCH_TEAM1))));

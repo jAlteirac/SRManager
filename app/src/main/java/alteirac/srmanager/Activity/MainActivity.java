@@ -1,6 +1,8 @@
 package alteirac.srmanager.Activity;
 
 import android.content.ContentResolver;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -9,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -22,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,36 +47,39 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
 
-    private Match match;
-    private ArrayList<News> listNews;
-    private DAONews daoNews;
-    private DAOMatch daoMatch;
-
-    ContentResolver contentResolver;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        contentResolver = getContentResolver();
+        ContentResolver contentResolver = getContentResolver();
 
         DAONews daoNews = new DAONews(contentResolver);
-        listNews = daoNews.getAllNews();
+        ArrayList<News> listNews = daoNews.getAllNews();
 
-
-        daoMatch = new DAOMatch(contentResolver);
-        match = daoMatch.getLastMatch();
+        DAOMatch daoMatch = new DAOMatch(contentResolver);
+        Match match = daoMatch.getLastMatch();
 
         if (match != null) {
             TextView affichMatch = (TextView) findViewById(R.id.text_next_match_eq1);
             TextView affichMatch2 = (TextView) findViewById(R.id.text_next_match_eq2);
             TextView affichMatchDate = (TextView) findViewById(R.id.text_next_match_date);
+            ImageView image_eq1 = (ImageView) findViewById(R.id.image_next_match_eq1);
+            ImageView image_eq2 = (ImageView) findViewById(R.id.image_next_match_eq2);
 
             affichMatch.setText(match.getTeam1().getName());
             affichMatch2.setText(match.getTeam2().getName());
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            affichMatchDate.setText(sdf.format(match.getDate()));
+
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            affichMatchDate.setText(dateFormat.format(match.getDate()));
+
+            byte [] imageByte = match.getTeam1().getByteImage();
+            Bitmap bitmap= BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
+            image_eq1.setImageBitmap(bitmap);
+
+            imageByte = match.getTeam2().getByteImage();
+            bitmap= BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
+            image_eq2.setImageBitmap(bitmap);
         }
 
 

@@ -15,11 +15,9 @@ import alteirac.srmanager.Model.Entity;
 
 public abstract class DAOAbstract {
 
-    protected SQLiteDatabase db;
     protected ContentResolver contentResolver;
 
     public DAOAbstract(ContentResolver contentResolver) {
-        db = DatabaseManager.getInstance().getDataBase();
         this.contentResolver = contentResolver;
     }
 

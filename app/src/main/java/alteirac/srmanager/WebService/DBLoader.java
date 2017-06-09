@@ -3,6 +3,8 @@ package alteirac.srmanager.WebService;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
@@ -20,9 +22,11 @@ import com.google.gson.stream.JsonReader;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +51,7 @@ public class DBLoader {
     Gson gson;
     
     public DBLoader() {
-        gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        gson = new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
     }
 
     public Match getNextMatch() {
@@ -68,7 +72,9 @@ public class DBLoader {
                     JsonParser parser = new JsonParser();
                     JsonObject jObjectAll = parser.parse(reader).getAsJsonObject();
 
-                    match.setDate((Date)new SimpleDateFormat("yyyy-MM-dd").parse(jObjectAll.get("date").getAsString()));
+                    Date date = new SimpleDateFormat("dd/MM/yyyy").parse(jObjectAll.get("date").getAsString());
+                    match.setDate(date);
+
                     match.setLocation(jObjectAll.get("location").getAsString());
                     match.setReferee(jObjectAll.get("referee").getAsString());
 
@@ -82,6 +88,7 @@ public class DBLoader {
                         JsonObject jObj = (JsonObject)jArrayTeam1.get(i);
                         players.add(jObj.get("name").getAsString());
                     }
+                    team1.setByteImage(getByteArrayFromURL(new URL(jObjectTeam1.get("image").getAsString())));
                     team1.setPlayers(players);
                     match.setTeam1(team1);
 
@@ -95,6 +102,7 @@ public class DBLoader {
                         JsonObject jObj = (JsonObject)jArrayTeam2.get(i);
                         players2.add(jObj.get("name").getAsString());
                     }
+                    team2.setByteImage(getByteArrayFromURL(new URL(jObjectTeam2.get("image").getAsString())));
                     team2.setPlayers(players2);
                     match.setTeam2(team2);
 
@@ -113,12 +121,34 @@ public class DBLoader {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("WebService", "Impossible de rapatrier les données Match.");
+            Log.e("WebService", "Impossible de rapatrier les données Match");
         }
 
         return null;
     }
 
+    public byte[] getByteArrayFromURL(URL url) {
+        try {
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.connect();
+
+            if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                InputStream inputStream = urlConnection.getInputStream();
+                if (inputStream != null) {
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                    return baos.toByteArray();
+                }
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("WebService", "Impossible de récupérer l'image");
+        }
+        return null;
+    }
 
 
     public ArrayList<News> getAllNews()
@@ -142,6 +172,9 @@ public class DBLoader {
                     for(JsonElement obj : jArray )
                     {
                         News news = gson.fromJson(obj , News.class);
+                        JsonObject object = (JsonObject)obj;
+                        String urlImage = object.get("image").getAsString();
+                        news.setByteImage(getByteArrayFromURL(new URL(urlImage)));
                         listNews.add(news);
                     }
                     return listNews;
@@ -149,7 +182,7 @@ public class DBLoader {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("WebService", "Impossible de rapatrier les données News.");
+            Log.e("WebService", "Impossible de rapatrier les données News");
         }
 
         return null;

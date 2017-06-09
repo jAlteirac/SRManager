@@ -1,6 +1,9 @@
 package alteirac.srmanager.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -10,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import alteirac.srmanager.Activity.MainActivity;
+import alteirac.srmanager.Activity.NewsDetail;
 import alteirac.srmanager.Adapter.NewsSlidePagerAdapter;
 import alteirac.srmanager.Model.News;
 import alteirac.srmanager.R;
@@ -54,6 +59,7 @@ public class NewsSlideFragment extends Fragment {
 
         final ImageButton rightNav = (ImageButton) v.findViewById(R.id.right_nav);
         final ImageButton leftNav = (ImageButton) v.findViewById(R.id.left_nav);
+        final LinearLayout linearNews = (LinearLayout) v.findViewById(R.id.linear_news);
 
 
         final int news_id = getArguments().getInt("news_id");
@@ -63,9 +69,16 @@ public class NewsSlideFragment extends Fragment {
 
             TextView textTitle = (TextView) v.findViewById(R.id.NewsTitle);
             TextView textDesc = (TextView) v.findViewById(R.id.NewsDesc);
+            ImageView imageView = (ImageView) v.findViewById(R.id.image_news);
+
+            byte [] imageByte = news.get(news_id).getByteImage();
+            Bitmap bitmap= BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
+            imageView.setImageBitmap(bitmap);
 
             textTitle.setText(news.get(news_id).getTitle());
             textDesc.setText(news.get(news_id).getDescription());
+
+
         }
 
         rightNav.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +100,16 @@ public class NewsSlideFragment extends Fragment {
             }
 
         });
+
+        linearNews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), NewsDetail.class);
+                intent.putExtra("id_news", news_id);
+                startActivityForResult(intent, 0);
+            }
+        });
+
 
         return v;
     }
