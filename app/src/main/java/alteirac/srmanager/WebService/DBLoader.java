@@ -1,14 +1,8 @@
 package alteirac.srmanager.WebService;
 
-import android.content.AsyncTaskLoader;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,24 +10,18 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
-import org.apache.commons.io.IOUtils;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.net.URL;
 
-import alteirac.srmanager.Activity.MainActivity;
 import alteirac.srmanager.Model.Match;
 import alteirac.srmanager.Model.News;
 import alteirac.srmanager.Model.Pub;
@@ -45,7 +33,7 @@ import alteirac.srmanager.Model.Team;
 
 public class DBLoader {
 
-    private final String URL = "http://88.160.200.162/srmanager";
+    private final String URL = "http://XX.XXX.XXX.XXX/srmanager"; //adresse IP du serveur qui héberge le WebService
     private final String URL_allNews = URL+"/news";
     private final String URL_nextMatch = URL+"/match";
     Gson gson;

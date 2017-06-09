@@ -2,11 +2,8 @@ package alteirac.srmanager.DatabaseManager.DAO;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
-import alteirac.srmanager.DatabaseManager.DatabaseManager;
 import alteirac.srmanager.Model.Entity;
 
 /**

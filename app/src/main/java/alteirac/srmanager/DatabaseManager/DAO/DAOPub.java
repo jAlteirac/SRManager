@@ -4,10 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.util.Log;
 
 import alteirac.srmanager.DatabaseManager.DatabaseConstants;
 import alteirac.srmanager.Model.Entity;

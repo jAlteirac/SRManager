@@ -2,19 +2,14 @@ package alteirac.srmanager.Activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.AsyncTaskLoader;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
 import alteirac.srmanager.DatabaseManager.DAO.DAOMatch;

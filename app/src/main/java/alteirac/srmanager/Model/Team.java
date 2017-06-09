@@ -1,7 +1,6 @@
 package alteirac.srmanager.Model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Jean on 06/05/2017.

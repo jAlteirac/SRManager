@@ -7,18 +7,13 @@ package alteirac.srmanager.Adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import alteirac.srmanager.DatabaseManager.DAO.DAONews;
 import alteirac.srmanager.Fragment.NewsSlideFragment;
 import alteirac.srmanager.Model.News;
-import alteirac.srmanager.R;
 
 /**
  * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in

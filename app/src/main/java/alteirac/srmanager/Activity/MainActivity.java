@@ -1,20 +1,16 @@
 package alteirac.srmanager.Activity;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,32 +21,19 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import alteirac.srmanager.Adapter.NewsSlidePagerAdapter;
 import alteirac.srmanager.DatabaseManager.DAO.DAOMatch;
 import alteirac.srmanager.DatabaseManager.DAO.DAONews;
-import alteirac.srmanager.DatabaseManager.DatabaseManager;
 import alteirac.srmanager.Model.Match;
 import alteirac.srmanager.Model.News;
 import alteirac.srmanager.Model.Pub;
 import alteirac.srmanager.R;
-import alteirac.srmanager.WebService.DBLoader;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 

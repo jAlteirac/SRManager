@@ -1,13 +1,11 @@
 package alteirac.srmanager.Fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import alteirac.srmanager.Activity.MainActivity;
@@ -28,7 +22,7 @@ import alteirac.srmanager.Adapter.NewsSlidePagerAdapter;
 import alteirac.srmanager.Model.News;
 import alteirac.srmanager.R;
 /**
- * Created by Guillaume on 05/05/2017.
+ * Created by Jean on 05/05/2017.
  */
 
 public class NewsSlideFragment extends Fragment {

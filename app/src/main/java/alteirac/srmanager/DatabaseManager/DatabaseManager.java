@@ -3,7 +3,6 @@ package alteirac.srmanager.DatabaseManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.ContactsContract;
 
 /**
  * Created by Jean on 07/05/2017.
