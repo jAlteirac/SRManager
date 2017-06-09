@@ -45,7 +45,7 @@ import alteirac.srmanager.Model.Team;
 
 public class DBLoader {
 
-    private final String URL = "http://86.233.167.190:90/srmanager";
+    private final String URL = "http://88.160.200.162/srmanager";
     private final String URL_allNews = URL+"/news";
     private final String URL_nextMatch = URL+"/match";
     Gson gson;

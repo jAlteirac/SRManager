@@ -1,6 +1,8 @@
 package alteirac.srmanager.Activity;
 
+import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -8,13 +10,21 @@ import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -38,27 +48,49 @@ import alteirac.srmanager.DatabaseManager.DAO.DAONews;
 import alteirac.srmanager.DatabaseManager.DatabaseManager;
 import alteirac.srmanager.Model.Match;
 import alteirac.srmanager.Model.News;
+import alteirac.srmanager.Model.Pub;
 import alteirac.srmanager.R;
 import alteirac.srmanager.WebService.DBLoader;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
 
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
+    private Match match;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+
+        CardView cardViewMatch = (CardView) findViewById(R.id.cardViewMatch);
+        cardViewMatch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MatchDetail.class);
+                intent.putExtra("match_id", match.getId());
+                startActivityForResult(intent, 1);
+            }
+        });
+
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         ContentResolver contentResolver = getContentResolver();
 
         DAONews daoNews = new DAONews(contentResolver);
         ArrayList<News> listNews = daoNews.getAllNews();
 
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPagerAdapter = new NewsSlidePagerAdapter(getSupportFragmentManager(), listNews.size(), listNews);
+        mPager.setAdapter(mPagerAdapter);
+
+
         DAOMatch daoMatch = new DAOMatch(contentResolver);
-        Match match = daoMatch.getLastMatch();
+        match = daoMatch.getLastMatch();
 
         if (match != null) {
             TextView affichMatch = (TextView) findViewById(R.id.text_next_match_eq1);
@@ -82,11 +114,6 @@ public class MainActivity extends AppCompatActivity {
             image_eq2.setImageBitmap(bitmap);
         }
 
-
-        mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new NewsSlidePagerAdapter(getSupportFragmentManager(), listNews.size(), listNews);
-        mPager.setAdapter(mPagerAdapter);
-
     }
 
     @Override
@@ -105,4 +132,24 @@ public class MainActivity extends AppCompatActivity {
         return mPager;
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        ArrayList<Pub> pubs = match.getPubs();
+        Iterator<Pub> it = pubs.iterator();
+
+        LatLng latLng = null;
+
+        while (it.hasNext()) {
+            Pub pub = it.next();
+            Log.e("Pub: ",pub.getName());
+            latLng = new LatLng(pub.getLat(), pub.getLng());
+            googleMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title(pub.getName()));
+        }
+        if (latLng != null) {
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        }
+    }
 }

@@ -25,10 +25,14 @@
         <activity android:name=".Activity.MainActivity" />
         <activity android:name=".Activity.NewsDetail" />
         <activity android:name=".Activity.MatchDetail" />
-        <activity android:name=".Activity.PubsDetail"></activity>
+
         <provider android:name=".DatabaseManager.Provider.SRManagerContentProvider"
             android:authorities="alteirac.srmanager.provider">
             </provider>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD0cJxGTzfwLWyMIcR_0AlHCFc1aT6bX6M"/>
     </application>
 
 </manifest>

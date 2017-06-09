@@ -46,7 +46,7 @@ public class DAONews extends DAOAbstract implements DatabaseConstants {
         News newsObj = (News) entityObj;
         newsObj.setId(cursor.getInt(cursor.getColumnIndexOrThrow(NEWS_ID)));
         newsObj.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(NEWS_TITLE)));
-        newsObj.setDate(new Date(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(NEWS_DATE)))));
+        newsObj.setDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(NEWS_DATE))));
         newsObj.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(NEWS_DESC)));
         newsObj.setByteImage(cursor.getBlob(cursor.getColumnIndexOrThrow(NEWS_IMAGE)));
     }

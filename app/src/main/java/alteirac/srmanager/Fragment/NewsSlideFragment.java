@@ -105,8 +105,8 @@ public class NewsSlideFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), NewsDetail.class);
-                intent.putExtra("id_news", news_id);
-                startActivityForResult(intent, 0);
+                intent.putExtra("news_id", news_id+1);
+                startActivityForResult(intent, 1);
             }
         });
 
