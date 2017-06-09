@@ -143,7 +143,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         while (it.hasNext()) {
             Pub pub = it.next();
-            Log.e("Pub: ",pub.getName());
             latLng = new LatLng(pub.getLat(), pub.getLng());
             googleMap.addMarker(new MarkerOptions()
                     .position(latLng)

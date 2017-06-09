@@ -64,7 +64,19 @@ public class NewsSlideFragment extends Fragment {
         final int news_id = getArguments().getInt("news_id");
         news = NewsSlidePagerAdapter.map;
 
-        if (news != null && news.size() > news_id) {
+        if (news.size() == news_id+1) {
+            rightNav.setVisibility(View.INVISIBLE);
+        }else {
+            rightNav.setVisibility(View.VISIBLE);
+        }
+
+        if(news_id == 0) {
+            leftNav.setVisibility(View.INVISIBLE);
+        }else {
+            leftNav.setVisibility(View.VISIBLE);
+        }
+
+        if (news != null) {
 
             TextView textTitle = (TextView) v.findViewById(R.id.NewsTitle);
             TextView textDesc = (TextView) v.findViewById(R.id.NewsDesc);
