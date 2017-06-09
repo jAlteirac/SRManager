@@ -14,10 +14,8 @@ public final class DatabaseManager implements  DatabaseConstants {
 
     private static volatile DatabaseManager instance = null;
     private SQLiteDatabase db;
-    private Context context;
 
     private DatabaseManager(Context context) {
-        this.context = context;
 
         CustomSQLiteOpenHelper helper = new CustomSQLiteOpenHelper(context);
         this.db = helper.getWritableDatabase();

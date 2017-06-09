@@ -2,6 +2,7 @@
     <string name="app_name">SRManager</string>
     <string name="textNextMatch">Prochain match</string>
     <string name="textMap">Bars qui retransmettent le prochain match</string>
+    <string name="textComposition">Composition des équipes</string>
 
 
 </resources>

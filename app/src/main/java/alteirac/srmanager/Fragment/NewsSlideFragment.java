@@ -54,8 +54,7 @@ public class NewsSlideFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ViewGroup v = (ViewGroup) inflater.inflate(
-                R.layout.fragment_slide_news, container, false);
+        ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment_slide_news, container, false);
 
         final ImageButton rightNav = (ImageButton) v.findViewById(R.id.right_nav);
         final ImageButton leftNav = (ImageButton) v.findViewById(R.id.left_nav);

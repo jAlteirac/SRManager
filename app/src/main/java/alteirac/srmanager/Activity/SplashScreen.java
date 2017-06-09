@@ -118,7 +118,7 @@ public class SplashScreen extends Activity {
                     }
                 }
                 match.setPubs(newPubs);
-                long ret = daoMatch.add(match);
+                daoMatch.add(match);
             }
 
             return null;

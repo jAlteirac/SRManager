@@ -23,6 +23,8 @@ import alteirac.srmanager.R;
 
 public class MatchDetail extends AppCompatActivity {
 
+    private int match_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,11 +32,12 @@ public class MatchDetail extends AppCompatActivity {
         setContentView(R.layout.activity_match_detail);
 
         final Intent intent = getIntent();
-        int match_id = intent.getIntExtra("match_id",0);
+        match_id = intent.getIntExtra("match_id",0);
 
-        Match match = (Match)new DAOMatch(getContentResolver()).get(match_id);
+        if (match_id != 0) {
 
-        if (match != null) {
+            Match match = (Match)new DAOMatch(getContentResolver()).get(match_id);
+
 
             ListView list_view_players_team1 = (ListView) findViewById(R.id.players_team1);
             ListView list_view_players_team2 = (ListView) findViewById(R.id.players_team2);
@@ -73,5 +76,13 @@ public class MatchDetail extends AppCompatActivity {
             image_eq2.setImageBitmap(bitmap);
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("match_id", match_id);
+        MatchDetail.this.setResult(1, intent);
+        MatchDetail.this.finish();
     }
 }

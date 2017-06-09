@@ -19,7 +19,6 @@ import alteirac.srmanager.R;
 
 public class NewsDetail extends AppCompatActivity {
 
-
     private int news_id;
 
     @Override
@@ -51,9 +50,6 @@ public class NewsDetail extends AppCompatActivity {
             newsImage.setImageBitmap(bitmap);
 
         }
-
-
-
     }
 
     @Override
